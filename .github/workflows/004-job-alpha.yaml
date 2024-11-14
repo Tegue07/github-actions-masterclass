@@ -1,4 +1,4 @@
-name: 004 Job Alpha
+name: 04 Job Alpha
 on:
   workflow_dispatch:
     inputs:
