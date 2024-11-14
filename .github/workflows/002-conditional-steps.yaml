@@ -18,7 +18,7 @@ jobs:
       - name: Step 2 - Execute If Previous Step Succeeded
         if: ${{ success() }}
         run: |
-          echo: "Running because the previous step succeeded"
+          echo "Running because the previous step succeeded"
       
       - name: Step 3 - I am failing
         run:
