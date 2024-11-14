@@ -28,3 +28,8 @@ jobs:
       - name: Step 4 - I will never execute
         run:
           echo "I will never execute"
+
+      - name: Step 5 - Execute on workflow failure
+        if: ${{failure()}}
+        run: |
+          echo "Workflow Failed"
