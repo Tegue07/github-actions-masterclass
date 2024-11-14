@@ -23,11 +23,14 @@ jobs:
           tox -e unit
           ls -la ${{github.workspace}}/backend
       
+      - name: Output Coverage File
+        run: cat ${{github.workspace}}/backend/.coverage
+      
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: backend/main.py
+          path: backend/.coverage
     
   load-artifact:
     runs-on: ubuntu-latest
