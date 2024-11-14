@@ -1,0 +1,15 @@
+name: 04 Job Beta
+on:
+  workflow_run:
+    workflows: ["04 Job Alpha"]
+    types: 
+      - completed
+
+jobs:
+  echo-hi-all:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Echo "Hi All"
+        run: |
+          echo "Hi All!"
+    
