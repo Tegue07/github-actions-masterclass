@@ -23,14 +23,11 @@ jobs:
           tox -e unit
           ls -la ${{github.workspace}}/backend
       
-      - name: Output Coverage File
-        run: cat ${{github.workspace}}/backend/.coverage
-      
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: coverage
-          path: ${{github.workspace}}/backend/.coverage
+          path: backend/.coverage
     
   load-artifact:
     runs-on: ubuntu-latest
@@ -38,10 +35,11 @@ jobs:
     steps:
       - name: Download Artifact
         uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: ${{github.workspace}}
       
       - name: List Folder
         run: |
           ls -la ${{github.workspace}}
-          echo "I am going to cat the contents of the .coverage file"
-          cat .coverage
       
