@@ -7,9 +7,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Send Data
-        id: data-sender
+        id: sender
         run: |
           echo "name=Tegue" >> $GITHUB_OUTPUT
       
       - name: Receive Data
-        run: "This is what was outputted in the send data step ${{steps.data-sender.outputs.name}}"
+        run: | 
+          echo "This is what was outputted in the send data step ${{steps.sender.outputs.name}}"
