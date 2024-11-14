@@ -1,0 +1,22 @@
+name: 004 Job Alpha
+on:
+  workflow_dispatch:
+    inputs:
+      username:
+        description: Username
+        default: Tegue
+        required: true
+        type: string
+      age:
+        description: Age
+        required: true
+        type: number
+
+jobs:
+  echo-username-and-age:
+    runs-on: ubuntu-latest
+    steps:
+       - name: Echo Username And Age
+         run: |
+          echo "Username: ${{inputs.username}}"
+          echo "Age: ${{inputs.age}}"
