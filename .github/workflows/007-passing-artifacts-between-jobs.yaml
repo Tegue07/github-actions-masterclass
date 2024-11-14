@@ -1,50 +1,43 @@
-name:  07 Passing Artifacts Between Jobs
+name: 07 Passing Files In Artifacts
+
 on:
   workflow_dispatch:
-
+    
 jobs:
   unit-tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Source Code
+      - name: Checkout source code 
         uses: actions/checkout@v4
-      
+
       - name: Install Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
-      - name: Install Tox
+
+      - name: Install tox
         run: pip install tox
-      
-      - name: Run Unit Tests
+      - name: Run unit tests
         run: |
           cd backend
           tox -e unit
-          ls -la ${{github.workspace}}/backend
-      
-      - name: Output Coverage File
-        run: cat ${{github.workspace}}/backend/.coverage
-      
-      - name: Upload Artifact
+          ls -la ${{ github.workspace }}/backend
+
+      - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: coverage
-          path: ${{github.workspace}}/backend/.coverage
-    
-  load-artifact:
-    runs-on: ubuntu-latest
-    needs: ["unit-tests"]
+          path: ${{ github.workspace }}/backend/.coverage
+  
+  load-file-example:
+    runs-on: ubuntu-22.04
+    needs: [unit-tests]
     steps:
-      - name: Download Artifact
+      - name: Download artifact
         uses: actions/download-artifact@v3
         with:
           name: coverage
-          path: ${{github.workspace}}
-      
-      - name: List Folder
-        run: |
-          ls -la ${{github.workspace}}
-          echo "I am going to cat the contents of the .coverage file"
-          cat .coverage
-      
+          path: ${{ github.workspace }}
+
+      - name: List folder 
+        run: ls -la ${{ github.workspace }}
