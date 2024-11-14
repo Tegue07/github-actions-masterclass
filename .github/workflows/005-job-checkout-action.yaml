@@ -1,0 +1,17 @@
+name: 05 Checkout Action
+
+on:
+  workflow_dispatch:
+
+jobs:
+  checkout-action:
+    runs-on: ubuntu-latest
+    steps:
+      - name: List Space
+        run: ls -la ${{github.workspace}}
+      
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+      
+      - name: List Space Again
+        run: ls -la ${{github.workspace}}
