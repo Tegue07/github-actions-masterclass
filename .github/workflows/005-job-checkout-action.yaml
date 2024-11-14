@@ -8,10 +8,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: List Space
+        # workspace is  a special variable containing the path to the working directory on the runner machine
+        # github is a context which we can access in expression ${{}}. We will talk more about contexts later.
         run: ls -la ${{github.workspace}}
       
       - name: Checkout Source Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4 # Here we say we want to use github action from repo github.com/actions/checkout
       
       - name: List Space Again
         run: ls -la ${{github.workspace}}
