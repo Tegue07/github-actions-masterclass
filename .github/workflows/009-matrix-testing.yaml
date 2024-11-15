@@ -1,0 +1,28 @@
+name: 09 Matrix Testing
+on:
+  workflow_dispatch:
+
+jobs:
+  matrix_testing:
+    strategy:
+      fail-fast: true
+      matrix:
+        os: [ubuntu-20-04,ubuntu-22-04]
+        python-version: ['3.8', '3.10']
+    runs-on: ${{matrix.os}}
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+    
+      - name: OS and Python Compatibility Check
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{matrix.python-version}}
+      
+      - name: Install Tox
+        run: pip install tox
+      
+      - name: Run Unit Tests
+        run: |
+          cd backend
+          tox -e unit
