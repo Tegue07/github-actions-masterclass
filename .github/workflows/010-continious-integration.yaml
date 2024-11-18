@@ -82,35 +82,35 @@ jobs:
           sleep 5
           curl --fail 'http://localhost:8080/'
   
-  vulnerability-scan:
-    runs-on: ubuntu-22.04
-    needs: [build-image]
-    steps:
-      - name: Download artifact
-        uses: actions/download-artifact@v3
-        with:
-          name: image
-          path: /tmp
-      - name: Load image
-        run: |
-          docker load --input /tmp/image.tar
-          docker image ls -a
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.0.10
-        with:
-          image-ref: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
-          format: 'json'
-          output: 'trivy-results.json'
-          severity: 'CRITICAL,HIGH'
-      - name: Upload results
-        uses: actions/upload-artifact@v3
-        with:
-          name: trivy-results
-          path: ${{ github.workspace }}/trivy-results.json
+  # vulnerability-scan:
+  #   runs-on: ubuntu-22.04
+  #   needs: [build-image]
+  #   steps:
+  #     - name: Download artifact
+  #       uses: actions/download-artifact@v3
+  #       with:
+  #         name: image
+  #         path: /tmp
+  #     - name: Load image
+  #       run: |
+  #         docker load --input /tmp/image.tar
+  #         docker image ls -a
+  #     - name: Run Trivy vulnerability scanner
+  #       uses: aquasecurity/trivy-action@master
+  #       with:
+  #         image-ref: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
+  #         format: 'json'
+  #         output: 'trivy-results.json'
+  #         severity: 'CRITICAL,HIGH'
+  #     - name: Upload results
+  #       uses: actions/upload-artifact@v3
+  #       with:
+  #         name: trivy-results
+  #         path: ${{ github.workspace }}/trivy-results.json
   
   publish-image:
     runs-on: ubuntu-22.04
-    needs: [integration-tests, vulnerability-scan]
+    needs: [integration-tests] #[integration-tests, vulnerability-scan] temporarily removed, waiting for them to fix rate limiting issue
     steps:
       - name: Download artifact
         uses: actions/download-artifact@v3
