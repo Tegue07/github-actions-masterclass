@@ -100,6 +100,7 @@ jobs:
         with:
           image-ref: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
           format: 'json'
+          exit-code: '1'
           output: 'trivy-results.json'
           severity: 'CRITICAL,HIGH'
       - name: Upload results
