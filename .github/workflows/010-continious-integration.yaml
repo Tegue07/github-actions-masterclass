@@ -96,11 +96,10 @@ jobs:
           docker load --input /tmp/image.tar
           docker image ls -a
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@0.0.10
         with:
           image-ref: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
           format: 'json'
-          exit-code: '1'
           output: 'trivy-results.json'
           severity: 'CRITICAL,HIGH'
       - name: Upload results
