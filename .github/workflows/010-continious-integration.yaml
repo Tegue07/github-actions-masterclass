@@ -1,10 +1,11 @@
 name: 10 Continious Integration
+
 on:
   workflow_dispatch:
     inputs:
       image-tag:
-        description: The Tag For The Docker Image
-        default: latest
+        description: "Tag for image"
+        default: "latest"
         type: string
         required: true
 
@@ -12,22 +13,19 @@ jobs:
   lint:
     runs-on: ubuntu-22.04
     steps:
-      - name: Checkout Source Code
+      - name: Checkout source code 
         uses: actions/checkout@v4
-      
       - name: Install Python 3.10
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
-      
-      - name: Install Tox
+      - name: Install tox
         run: pip install tox
-      
-      - name: Run Lint
+      - name: Run lint
         run: |
           cd backend
           tox -e lint
-      
+  
   unit-test:
     runs-on: ubuntu-22.04
     steps:
@@ -43,26 +41,26 @@ jobs:
         run: |
           cd backend
           tox -e unit
-  
+
   build-image:
     runs-on: ubuntu-22.04
-    needs: [lint, unit-test]
+    needs: [lint, unit-test]  # Specify that build-image depends on lint and unit-test
     steps:
-      - name: Checkout Source Code
+      - name: Checkout source code 
         uses: actions/checkout@v4
-      
-      - name: Set Up Docker
+
+      - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
-      - name: Build and export image
+
+      - name: Build and export
         uses: docker/build-push-action@v5
-        with: 
+        with:
           context: backend #Sub directory where the Dockerfile is located
-          tags: ${{vars.DOCKER_HUB_IMAGE}}:${{inputs.image-tag}}
+          tags: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }} 
           outputs: type=docker,dest=/tmp/image.tar
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
         with:
           name: image
           path: /tmp/image.tar
@@ -71,12 +69,11 @@ jobs:
     runs-on: ubuntu-22.04
     needs: [build-image]
     steps:
-      - name: Download Artifact
-        uses: actions/download-artifact@v4
+      - name: Download artifact
+        uses: actions/download-artifact@v3
         with:
           name: image
           path: /tmp
-
       - name: Load image
         run: |
           docker load --input /tmp/image.tar
@@ -84,13 +81,13 @@ jobs:
           docker run -p 8080:80 -d ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }} 
           sleep 5
           curl --fail 'http://localhost:8080/'
-
+  
   vulnerability-scan:
     runs-on: ubuntu-22.04
     needs: [build-image]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: image
           path: /tmp
@@ -106,7 +103,7 @@ jobs:
           output: 'trivy-results.json'
           severity: 'CRITICAL,HIGH'
       - name: Upload results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: trivy-results
           path: ${{ github.workspace }}/trivy-results.json
@@ -116,7 +113,7 @@ jobs:
     needs: [integration-tests, vulnerability-scan]
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v3
         with:
           name: image
           path: /tmp
@@ -132,7 +129,3 @@ jobs:
       - name: Docker push image to DockerHub
         run: |
           docker push ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
-    
-  
-      
-      
