@@ -96,7 +96,7 @@ jobs:
           docker load --input /tmp/image.tar
           docker image ls -a
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ vars.DOCKER_HUB_IMAGE }}:${{ inputs.image-tag }}
           format: 'json'
